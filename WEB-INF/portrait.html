@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../css/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/fileinput/file-input.min.css">
+    <link rel="stylesheet" href="../css/jcrop/jquery.Jcrop.min.css">
+    <link rel="stylesheet" href="../css/sco/scojs.css">
+    <link rel="stylesheet" href="../css/sco/sco.message.css">
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="page-header">
+            <h1>头像上传插件
+                <small>基于Bootstrap下fileinput+jcrop组合而成</small>
+                <button type="button" name="upload" class="pull-right btn btn-primary" style="margin-top: 15px">点击查看效果</button>
+            </h1>
+        </div>
+    </div>
+    <div class="row">
+        <img src="../img/my_portrait.png" class="img-thumbnail img-responsive center-block">
+        <br>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <p>
+                    说说原理，实际上，Jcrop并没有在客户端帮我们把图片进行裁剪，只是收集了用户的“裁剪信息”，然后传到后端，最后的裁剪和压缩，还是要依靠服务器上的代码来进行。
+                </p>
+                <p>
+                    我们可以看到这个插件在图片上显示出了8个控制点，让用户选择裁剪区域，当用户选择成功后，会自动的返回“裁剪信息”，所谓的裁剪信息，其实就是选框的左上角原点坐标，及裁剪框的宽度和高度，通过这四个值，在后端就可以进行裁剪工作了。
+                </p>
+                <p>
+                    但是我们要注意，用户在上传图片的时候，长度宽度都是不规则的，当然我们可以用bootstap-fileinput这个插件去限制用户只能上传指定宽高的图片，但这就失去了我们“裁剪”的意义，而且用户的体验就非常差劲。然而jcrop所返回的坐标值及宽高，并不是基于所上传图片自身的像素，而是如图中所示，是外层DIV的宽高。举一个例子，上图我实际放入的个人照片宽度是852px，但是Jcrop的截取宽度是312px，这个312px并不是真正图片上的实际宽度，是经过缩放后的宽度，所以我们后端一定需要重新对这个312px进行一次还原，还原到照片实际比例的宽度。
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="../js/jquery.js"></script>
+<script type="text/javascript" src="../js/bootstrap/bootstrap.min.js"></script>
+<!--图片裁剪插件-->
+<script type="text/javascript" src="../js/jcrop/jquery.Jcrop.min.js"></script>
+<!--文件上传插件-->
+<script type="text/javascript" src="../js/fileinput/file-input.min.js"></script>
+<!--fileinput中文化-->
+<script type="text/javascript" src="../js/fileinput/zh.js"></script>
+<!--模态窗口优化插件,sco还有很多其他优化组件-->
+<script type="text/javascript" src="../js/sco/sco.modal.js"></script>
+<!--腾讯的模板插件,使用起来类似JSTL和EL表达式-->
+<script type="text/javascript" src="../js/template/template.js"></script>
+<script type="text/javascript" src="../js/portrait.js"></script>
+<!--这段不是js代码,注意了,这个是ArtTemplate专用的模板代码,就是前面加载的template.js这个插件-->
+<script id="portraitUpload" type="text/html">
+    <div style="padding: 10px 20px">
+        <form role="form" enctype="multipart/form-data" method="post">
+            <div class="embed-responsive embed-responsive-16by9">
+                <div class="embed-responsive-item pre-scrollable">
+                    <img alt="" src="../img/showings.jpg" id="cut-img"
+                         class="img-responsive img-thumbnail"/>
+                </div>
+            </div>
+            <div class="white-divider-md"></div>
+            <input type="file" name="imgFile" id="fileUpload"/>
+            <div class="white-divider-md"></div>
+            <div id="alert" class="alert alert-danger hidden" role="alert"></div>
+            <input type="hidden" id="x" name="x"/>
+            <input type="hidden" id="y" name="y"/>
+            <input type="hidden" id="w" name="w"/>
+            <input type="hidden" id="h" name="h"/>
+        </form>
+    </div>
+</script>
+</body>
+</html>
